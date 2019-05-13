@@ -34,18 +34,12 @@ public class JuliaSet extends JFrame {
 	static double maxRange = 2;
 	static double minRange = -2;
 	static double range = maxRange + Math.abs(minRange);
-	static Point origin = new Point(0, 0);
 
-	static int black = 0x000000;
-	static int c1 = 0xffd900;
-	static int c2 = 0xff1400;
-	static int c3 = 0xc60000;
-	static int c4 = 0x990000;
-	static int c5 = 0x790000;
-	static int c6 = 0x4c0000;
+	static boolean stripColors = false;
 
 	static BufferedImage im = new BufferedImage(XSIZE, YSIZE, BufferedImage.TYPE_INT_RGB);
 	static JuliaSet jS = new JuliaSet();
+	static colorHashMap chm = new colorHashMap(256, 120, 0);
 
 	private JLabel mapF = new JLabel("z(n + 1) = z(n)^2 + " + "(" + c + ")");
 	private JMenuBar menuBar = new JMenuBar();
@@ -54,12 +48,11 @@ public class JuliaSet extends JFrame {
 	private JMenu moreMenu = new JMenu("More");
 	private JMenuItem generate = new JMenuItem("Generate");
 	private JMenuItem presets = new JMenuItem("Presets");
-	private JMenuItem colors = new JMenuItem("Edit colors");
+	private JMenuItem colors = new JMenuItem("Disable colors");
 	private JMenuItem quit = new JMenuItem("Quit");
 	private JMenuItem about = new JMenuItem("About");
 
 	public JuliaSet() {
-
 		Panel jSPanel = new Panel();
 		mapF.setFont(new Font("Arial", Font.PLAIN, 26));
 		mapF.setForeground(Color.white);
@@ -217,53 +210,16 @@ public class JuliaSet extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Object[] presets = { "Reds", "Basic", "Dark night", "Metro", "Verve" };
-				String s = (String) JOptionPane.showInputDialog(null, "Select a color scheme:", "Reds",
-						JOptionPane.PLAIN_MESSAGE, null, presets, "Reds");
-				if (s != null) {
-					if (s.equals("Reds")) {
-						c1 = 0xffd900;
-						c2 = 0xff1400;
-						c3 = 0xc60000;
-						c4 = 0x990000;
-						c5 = 0x790000;
-						c6 = 0x4c0000;
-						generateImage();
-					}
-					if (s.equals("Basic")) {
-						c1 = c2 = c3 = c4 = c5 = c6 = 0xffffff;
-						generateImage();
-					}
-					if (s.equals("Dark night")) {
-						c1 = 0x603cba;
-						c2 = 0x603cba;
-						c3 = black;
-						c4 = black;
-						c5 = black;
-						c6 = black;
-						generateImage();
-					}
-					if (s.equals("Metro")) {
-						c1 = 0x603cba;
-						c2 = 0xff0097;
-						c3 = 0xffff00;
-						c4 = 0x39ff14;
-						c5 = 0x00b2ee;
-						c6 = 0x00b2ee;
-						generateImage();
-					}
-					if (s.equals("Verve")) {
-						c1 = 0xd17302;
-						c2 = 0xf9de75;
-						c3 = 0xb9dcde;
-						c4 = 0x2a7cd2;
-						c5 = 0x0e44b1;
-						c6 = 0x010a71;
-						generateImage();
-					}
+				stripColors ^= true;
+				if (stripColors) {
+					colors.setText("Enable colors");
+					mapF.setForeground(Color.black);
+				} else {
+					colors.setText("Disable colors");
+					mapF.setForeground(Color.white);
 				}
+				generateImage();
 			}
-
 		});
 		quit.addActionListener(new ActionListener() {
 			@Override
@@ -305,20 +261,13 @@ public class JuliaSet extends JFrame {
 					n = temp;
 					i++;
 				}
-				if (i <= 4)
-					im.setRGB(x, y, c6);
-				else if (i > 2 && i <= 4)
-					im.setRGB(x, y, c5);
-				else if (i > 4 && i <= 8)
-					im.setRGB(x, y, c4);
-				else if (i > 8 && i <= 16)
-					im.setRGB(x, y, c3);
-				else if (i > 16 && i <= 32)
-					im.setRGB(x, y, c2);
-				else if (i > 12 && i < max)
-					im.setRGB(x, y, c1);
-				else
-					im.setRGB(x, y, black);
+				im.setRGB(x, y, chm.getColor(i).getR() - chm.getColor(i).getG() - chm.getColor(i).getB());
+				if (stripColors) {
+					if (i <= 64)
+						im.setRGB(x, y, 0xffffff);
+				}
+				if (i > 64)
+					im.setRGB(x, y, 0x000000);
 				jS.repaint();
 			}
 		}
