@@ -19,8 +19,22 @@ public class customMethods {
 		else
 			return Math.abs(a - b);
 	}
-	
+
 	public static void updateJLabel(JLabel l) {
-		l.setText("z(n + 1) = z(n)^2 + " + "(" + JuliaSet.c + ")");
+		char sub = ((char) ('\u00B2'));
+		if (JuliaSet.c.getReal() < 0 && JuliaSet.c.getImaginary() > 0) {
+			l.setText("z(n + 1) = z" + sub + "(n)" + "- " + Math.abs(JuliaSet.c.getReal()) + " + "
+					+ JuliaSet.c.getImaginary() + "i");
+		}
+		if (JuliaSet.c.getReal() > 0 && JuliaSet.c.getImaginary() > 0) {
+			l.setText("z(n + 1) = z" + sub + "(n) + " + JuliaSet.c.getReal() + " + " + JuliaSet.c.getImaginary() + "i");
+		}
+		if (JuliaSet.c.getReal() > 0 && JuliaSet.c.getImaginary() < 0) {
+			l.setText("z(n + 1) = z" + sub + "(n) + " + JuliaSet.c.getReal() + " - "
+					+ Math.abs(JuliaSet.c.getImaginary()) + "i");
+		} else {
+			l.setText("z(n + 1) = z" + sub + "(n) - " + Math.abs(JuliaSet.c.getReal()) + " - "
+					+ Math.abs(JuliaSet.c.getImaginary()));
+		}
 	}
 }

@@ -22,15 +22,15 @@ public class Complex {
 	public double getMagnitude() {
 		return (Math.sqrt((this.r) * (this.r) + (this.i) * (this.i)));
 	}
-	
+
 	public void setReal(Double r) {
 		this.r = r;
 	}
-	
+
 	public void setImaginary(Double i) {
 		this.i = i;
 	}
-	
+
 //	public double getArgument() {
 //		return Math.toDegrees(Math.atan(this.i / this.r));
 //	}
@@ -60,7 +60,7 @@ public class Complex {
 	public Complex add(Complex c) {
 		return add(this, c);
 	}
-	
+
 	public Complex add(Double n) {
 		return new Complex(this.r + n, this.i);
 	}
@@ -74,7 +74,7 @@ public class Complex {
 	public Complex subtract(Complex c) {
 		return subtract(this, c);
 	}
-	
+
 	public Complex subtract(Double n) {
 		return new Complex(this.r - n, this.i);
 	}
@@ -96,9 +96,9 @@ public class Complex {
 	public Complex multiply(Complex a, Complex b) {
 		return new Complex(a.r * b.r - (a.i * b.i), a.r * b.i + b.r * a.i);
 	}
-	
+
 	// Powers
-	
+
 	public Complex power(Complex c, int p) {
 		return power(this, c, p);
 
