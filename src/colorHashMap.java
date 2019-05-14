@@ -16,9 +16,9 @@ public class colorHashMap {
 
 	public void fillMap(int i_r, int i_g, int i_b) {
 		int i = 0;
-		for (int r = i_r; r < 256; r += 30) {
-			for (int g = i_g; g < 256; g += 30) {
-				for (int b = i_b; b < 256; b += 30) {
+		for (int r = i_r; r < 256; r += 20) {
+			for (int g = i_g; g < 256; g += 20) {
+				for (int b = i_b; b < 256; b += 20) {
 					hm.put(i, new Color(r, g, b));
 					i++;
 				}

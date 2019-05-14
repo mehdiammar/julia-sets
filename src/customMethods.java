@@ -34,7 +34,7 @@ public class customMethods {
 					+ Math.abs(JuliaSet.c.getImaginary()) + "i");
 		} else {
 			l.setText("z(n + 1) = z" + sub + "(n) - " + Math.abs(JuliaSet.c.getReal()) + " - "
-					+ Math.abs(JuliaSet.c.getImaginary()));
+					+ Math.abs(JuliaSet.c.getImaginary()) + "i");
 		}
 	}
 }

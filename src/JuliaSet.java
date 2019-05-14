@@ -51,7 +51,7 @@ public class JuliaSet extends JFrame {
 
 	static BufferedImage im = new BufferedImage(XSIZE, YSIZE, BufferedImage.TYPE_INT_RGB);
 	static JuliaSet jS = new JuliaSet();
-	static colorHashMap chm = new colorHashMap(200, 45, 94);
+	static colorHashMap chm = new colorHashMap(30, 10, 30);
 
 	// Menu items
 	private JLabel mapF = new JLabel();
@@ -267,8 +267,8 @@ public class JuliaSet extends JFrame {
 								+ "\nIf z(n) does not tend to infinity as n tends to infinity, then z(n) belongs to the filled-in Julia Set."
 								+ "\nThese pseudofractals are generated in the [-2, 2] range with 100 calculations for each pixel."
 								+ "\n\n The colors (other than black) help indicate which numbers diverge the slowest (closer to the black area)."
-								+ "\nThere are two distinct levels for coloring to help differentiate the layers.\n"
-								+ "\nMade by Mehdi Ammar" + "\n\n",
+								+ "\nThere are two distinct levels for coloring to help differentiate the layers."
+								+ "\n\n",
 						"About Julia sets", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
