@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,8 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -44,26 +47,26 @@ public class JuliaSet extends JFrame {
 	static double range = maxRange + Math.abs(minRange);
 
 	static boolean stripColors = false;
-	static int curIndex = 6;
+	static int curIndex = 7;
 
 	static BufferedImage im = new BufferedImage(XSIZE, YSIZE, BufferedImage.TYPE_INT_RGB);
 	static JuliaSet jS = new JuliaSet();
 	static colorHashMap chm = new colorHashMap(200, 45, 94);
 
 	// Menu items
-
 	private JLabel mapF = new JLabel();
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu fileMenu = new JMenu("File");
 	private JMenu newSubMenu = new JMenu("New");
-	private JMenu moreMenu = new JMenu("More");
+	private JMenu moreMenu = new JMenu("Other");
 	private JMenuItem generate = new JMenuItem("Generate");
 	private JMenuItem presets = new JMenuItem("Presets");
 	private JMenuItem save = new JMenuItem("Save PNG");
-	private JMenuItem savepreset = new JMenuItem("Save current as preset");
+	private JMenuItem savepreset = new JMenuItem("Create preset");
 	private JMenuItem colors = new JMenuItem("Disable colors");
 	private JMenuItem quit = new JMenuItem("Quit");
 	private JMenuItem about = new JMenuItem("About");
+	private JMenuItem learnmore = new JMenuItem("Learn more");
 	String[] presetsSelection = new String[20];
 
 	// Default presets and empty list
@@ -76,6 +79,8 @@ public class JuliaSet extends JFrame {
 	Preset siegeldisk = new Preset("Siegel Disk", -0.390541, 0.586788, -2, 2);
 	Preset cf1 = new Preset("Cool fractal - 1", -0.4, 0.65, -2, 2);
 	Preset cf2 = new Preset("Cool fractal - 2", -0.125, 0.65, -2, 2);
+	Preset cf3 = new Preset("Cool fractal - 3", -0.8, 0.156, -2, 2);
+
 
 	public JuliaSet() {
 		Panel jSPanel = new Panel();
@@ -103,6 +108,7 @@ public class JuliaSet extends JFrame {
 		newSubMenu.add(presets);
 		menuBar.add(moreMenu);
 		moreMenu.add(about);
+		moreMenu.add(learnmore);
 
 		// Mouse listeners
 
@@ -223,7 +229,8 @@ public class JuliaSet extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (curIndex == 20) {
-					JOptionPane.showMessageDialog(null, "You have reached the maximum number of presets allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "You have reached the maximum number of presets allowed.",
+							"Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				String name = JOptionPane.showInputDialog(null, "Please enter the name of the preset:");
@@ -260,9 +267,22 @@ public class JuliaSet extends JFrame {
 								+ "\nIf z(n) does not tend to infinity as n tends to infinity, then z(n) belongs to the filled-in Julia Set."
 								+ "\nThese pseudofractals are generated in the [-2, 2] range with 100 calculations for each pixel."
 								+ "\n\n The colors (other than black) help indicate which numbers diverge the slowest (closer to the black area)."
-								+ "\nThere are two distinct levels for coloring to help differentiate the layers."
-								+ "\n\n",
+								+ "\nThere are two distinct levels for coloring to help differentiate the layers.\n"
+								+ "\nMade by Mehdi Ammar" + "\n\n",
 						"About Julia sets", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		learnmore.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Desktop d = Desktop.getDesktop();
+				try {
+					d.browse(new URI("https://en.wikipedia.org/wiki/Julia_set"));
+				} catch (IOException e1) {
+					JOptionPane.showInputDialog(e1.getMessage());
+				} catch (URISyntaxException e1) {
+					JOptionPane.showInputDialog(e1.getMessage());
+				}
 			}
 		});
 	}
@@ -316,6 +336,7 @@ public class JuliaSet extends JFrame {
 		presetsSelection[3] = "Siegel Disk";
 		presetsSelection[4] = "Cool fractal - 1";
 		presetsSelection[5] = "Cool fractal - 2";
+		presetsSelection[6] = "Cool fractal - 3";
 
 		presetsList.add(rabbit);
 		presetsList.add(dendrite);
@@ -323,6 +344,7 @@ public class JuliaSet extends JFrame {
 		presetsList.add(siegeldisk);
 		presetsList.add(cf1);
 		presetsList.add(cf2);
+		presetsList.add(cf3);
 	}
 
 	public void addPreset(String name, double r, double i) {
