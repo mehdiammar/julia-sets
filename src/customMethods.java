@@ -22,18 +22,23 @@ public class customMethods {
 
 	public static void updateJLabel(JLabel l) {
 		char sub = ((char) ('\u00B2'));
+		char nsub = ((char) ('\u2099'));
+		char psub = ((char) ('\u208A'));
+		char osub = ((char) ('\u2081'));
+
 		if (JuliaSet.c.getReal() < 0 && JuliaSet.c.getImaginary() > 0) {
-			l.setText("z(n + 1) = z" + sub + "(n)" + "- " + Math.abs(JuliaSet.c.getReal()) + " + "
+			l.setText("z" + nsub + psub + osub + " = z" + nsub + sub + "- " + Math.abs(JuliaSet.c.getReal()) + " + "
 					+ JuliaSet.c.getImaginary() + "i");
 		}
 		if (JuliaSet.c.getReal() > 0 && JuliaSet.c.getImaginary() > 0) {
-			l.setText("z(n + 1) = z" + sub + "(n) + " + JuliaSet.c.getReal() + " + " + JuliaSet.c.getImaginary() + "i");
+			l.setText("z" + nsub + psub + osub + " = z" + nsub + sub + " + " + JuliaSet.c.getReal() + " + " + JuliaSet.c.getImaginary()
+					+ "i");
 		}
 		if (JuliaSet.c.getReal() > 0 && JuliaSet.c.getImaginary() < 0) {
-			l.setText("z(n + 1) = z" + sub + "(n) + " + JuliaSet.c.getReal() + " - "
+			l.setText("z" + nsub + psub + osub + " = z" + nsub + sub + " + " + JuliaSet.c.getReal() + " - "
 					+ Math.abs(JuliaSet.c.getImaginary()) + "i");
 		} else {
-			l.setText("z(n + 1) = z" + sub + "(n) - " + Math.abs(JuliaSet.c.getReal()) + " - "
+			l.setText("z" + nsub + psub + osub + " = z" + nsub + sub + " - " + Math.abs(JuliaSet.c.getReal()) + " - "
 					+ Math.abs(JuliaSet.c.getImaginary()) + "i");
 		}
 	}

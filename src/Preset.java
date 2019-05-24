@@ -1,10 +1,10 @@
 
 public class Preset {
 	String name;
-	int maxRange, minRange;
+	double maxRange, minRange;
 	double r, i;
 
-	Preset(String name, double Real, double Imaginary, int minRange, int maxRange) {
+	Preset(String name, double Real, double Imaginary, double minRange, double maxRange) {
 		this.name = name;
 		this.r = Real;
 		this.i = Imaginary;
@@ -16,11 +16,11 @@ public class Preset {
 		return this.name;
 	}
 
-	public int getMaxRange() {
+	public double getMaxRange() {
 		return this.maxRange;
 	}
 
-	public int getMinRange() {
+	public double getMinRange() {
 		return this.minRange;
 	}
 

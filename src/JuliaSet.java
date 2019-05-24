@@ -34,36 +34,41 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class JuliaSet extends JFrame {
 
-	final static int XSIZE = 1680;
+	final static int XSIZE = 1080;
 	final static int YSIZE = 1080;
 	final static int X = 400;
 	final static int Y = 200;
 	final static double zoomStep = 0.05;
 
-	static Complex c = new Complex(-0.390541, 0.586788);
+	static Complex c = new Complex(-0.4, 0.65);
 	static int max = 100;
-	static double maxRange = 2;
-	static double minRange = -2;
+	static double maxRange = 1.5;
+	static double minRange = -1.5;
 	static double range = maxRange + Math.abs(minRange);
 
 	static boolean stripColors = false;
+	static boolean switchColors = false;
 	static int curIndex = 7;
 
 	static BufferedImage im = new BufferedImage(XSIZE, YSIZE, BufferedImage.TYPE_INT_RGB);
 	static JuliaSet jS = new JuliaSet();
-	static colorHashMap chm = new colorHashMap(30, 10, 30);
+	static colorHashMap chm = new colorHashMap(10, 10, 10);
 
 	// Menu items
+
 	private JLabel mapF = new JLabel();
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu fileMenu = new JMenu("File");
 	private JMenu newSubMenu = new JMenu("New");
+	private JMenu colorSettings = new JMenu("Colors");
 	private JMenu moreMenu = new JMenu("Other");
 	private JMenuItem generate = new JMenuItem("Generate");
 	private JMenuItem presets = new JMenuItem("Presets");
-	private JMenuItem save = new JMenuItem("Save PNG");
+	private JMenuItem save = new JMenuItem("Save as PNG");
 	private JMenuItem savepreset = new JMenuItem("Create preset");
-	private JMenuItem colors = new JMenuItem("Disable colors");
+	private JMenuItem switchColorPattern = new JMenuItem("Iteration-based coloring");
+	private JMenuItem disableColors = new JMenuItem("Disable colors");
+	private JMenuItem setMax = new JMenuItem("Generation");
 	private JMenuItem quit = new JMenuItem("Quit");
 	private JMenuItem about = new JMenuItem("About");
 	private JMenuItem learnmore = new JMenuItem("Learn more");
@@ -73,14 +78,13 @@ public class JuliaSet extends JFrame {
 
 	static ArrayList<Preset> presetsList;
 
-	Preset rabbit = new Preset("Douady's Rabbit", -0.12, 0.745, -2, 2);
-	Preset sanmaro = new Preset("San Maro", -0.75, 0, -2, 2);
-	Preset dendrite = new Preset("Dendrite", 0, 1, -2, 2);
-	Preset siegeldisk = new Preset("Siegel Disk", -0.390541, 0.586788, -2, 2);
-	Preset cf1 = new Preset("Cool fractal - 1", -0.4, 0.65, -2, 2);
-	Preset cf2 = new Preset("Cool fractal - 2", -0.125, 0.65, -2, 2);
-	Preset cf3 = new Preset("Cool fractal - 3", -0.8, 0.156, -2, 2);
-
+	Preset rabbit = new Preset("Douady's Rabbit", -0.12, 0.745, -1.5, 1.5);
+	Preset sanmaro = new Preset("San Maro", -0.75, 0, -1.5, 1.5);
+	Preset dendrite = new Preset("Dendrite", 0, 1, -1.5, 1.5);
+	Preset siegeldisk = new Preset("Siegel Disk", -0.390541, 0.586788, -1.5, 1.5);
+	Preset cf1 = new Preset("Cool fractal - 1", -0.4, 0.65, -1.5, 1.5);
+	Preset cf2 = new Preset("Cool fractal - 2", -0.4, 0.6, -1.5, 1.5);
+	Preset cf3 = new Preset("Cool fractal - 3", -0.8, 0.156, -1.5, 1.5);
 
 	public JuliaSet() {
 		Panel jSPanel = new Panel();
@@ -90,19 +94,22 @@ public class JuliaSet extends JFrame {
 		mapF.setHorizontalAlignment(SwingConstants.RIGHT);
 		mapF.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		mapF.setForeground(Color.white);
-		getContentPane().add(mapF, BorderLayout.SOUTH);
+//		getContentPane().add(mapF, BorderLayout.SOUTH);
 		setBounds(X, Y, XSIZE, YSIZE);
 		setVisible(true);
-		setTitle("Julia Set Visualizer");
+		setTitle("Quadratic Julia Set Visualizer for " + mapF.getText());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(jSPanel);
 		getContentPane().add(menuBar, BorderLayout.NORTH);
 		menuBar.add(fileMenu);
 		fileMenu.add(newSubMenu);
+		fileMenu.add(colorSettings);
+		colorSettings.add(switchColorPattern);
+		colorSettings.add(disableColors);
+		fileMenu.add(setMax);
 		fileMenu.add(save);
 		fileMenu.add(savepreset);
-		fileMenu.add(colors);
 		fileMenu.add(quit);
 		newSubMenu.add(generate);
 		newSubMenu.add(presets);
@@ -187,12 +194,13 @@ public class JuliaSet extends JFrame {
 					}
 				}
 				if (r != null && i != null) {
-					maxRange = 2;
-					minRange = -2;
+					maxRange = 1.5;
+					minRange = -1.5;
 					range = customMethods.calculateRange(minRange, maxRange);
 					c.setReal(rd);
 					c.setImaginary(id);
 					customMethods.updateJLabel(mapF);
+					setTitle("Quadratic Julia Set Visualizer for " + mapF.getText());
 					generateImage();
 				}
 			}
@@ -212,6 +220,7 @@ public class JuliaSet extends JFrame {
 							c.setReal(selectedPreset.getReal());
 							c.setImaginary(selectedPreset.getImaginary());
 							customMethods.updateJLabel(mapF);
+							setTitle("Quadratic Julia Set Visualizer for " + mapF.getText());
 							generateImage();
 						}
 					}
@@ -239,18 +248,53 @@ public class JuliaSet extends JFrame {
 				addPreset(name, realValue, imValue);
 			}
 		});
-		colors.addActionListener(new ActionListener() {
+		disableColors.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				stripColors ^= true;
 				if (stripColors) {
-					colors.setText("Enable colors");
+					disableColors.setText("Enable colors");
 					mapF.setForeground(Color.black);
 				} else {
-					colors.setText("Disable colors");
+					disableColors.setText("Disable colors");
 					mapF.setForeground(Color.white);
 				}
 				generateImage();
+			}
+		});
+		switchColorPattern.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switchColors ^= true;
+				if (switchColors) {
+					switchColorPattern.setText("Layers coloring");
+				} else {
+					switchColorPattern.setText("Iteration-based coloring");
+				}
+				generateImage();
+			}
+		});
+		setMax.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean isNum = false;
+				double rd = 0;
+				String r = null;
+				while (!isNum) {
+					r = JOptionPane.showInputDialog(
+							"Please enter the maximum number of iterations per pixels (Recommended 100 - 1000):");
+					try {
+						if (r != null)
+							rd = Double.parseDouble(r);
+						max = (int) rd;
+						isNum = true;
+					} catch (NumberFormatException e1) {
+						JOptionPane.showMessageDialog(null, "Please enter a number.");
+					}
+				}
+				if (r != null) {
+					generateImage();
+				}
 			}
 		});
 		quit.addActionListener(new ActionListener() {
@@ -259,17 +303,17 @@ public class JuliaSet extends JFrame {
 				System.exit(0);
 			}
 		});
+		// z(n+1) = z(n)^2 + c.
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null,
-						"Given a complex number \"c\" and a complex number \"z\", let z(n+1) = z(n)^2 + c. "
-								+ "\nIf z(n) does not tend to infinity as n tends to infinity, then z(n) belongs to the filled-in Julia Set."
-								+ "\nThese pseudofractals are generated in the [-2, 2] range with 100 calculations for each pixel."
-								+ "\n\n The colors (other than black) help indicate which numbers diverge the slowest (closer to the black area)."
-								+ "\nThere are two distinct levels for coloring to help differentiate the layers."
-								+ "\n\n",
-						"About Julia sets", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Given a complex number c and a complex number z, let z" + '\u2099'
+						+ '\u208A' + '\u2081' + " = " + "z" + '\u2099' + '\u00B2' + " + c"
+						+ "\nIf the function does not diverge as n tends to infinity, then z \u2099 belongs to the filled-in Julia Set."
+						+ "\nThese pseudofractals are generated in the [-1.5, 1.5] range by default with 100 iterations for each pixel."
+						+ "\n\n Iterative-based coloring helps indicate which regions diverge the slowest ."
+						+ "\n\n Please click the Learn more button to be taken to the Wikipedia page for the subject."
+						+ "\n\n", "About Quadratic Julia sets", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		learnmore.addActionListener(new ActionListener() {
@@ -299,6 +343,8 @@ public class JuliaSet extends JFrame {
 		generateImage();
 	}
 
+	// Classic escape algorithm
+
 	public static void generateImage() {
 		int i = 0;
 		for (int y = 0; y < im.getHeight(); y++) {
@@ -314,20 +360,30 @@ public class JuliaSet extends JFrame {
 					i++;
 				}
 				if (!stripColors)
-					im.setRGB(x, y, (new Color(chm.getColor(i % chm.getSize()).getR(),
-							chm.getColor(i % chm.getSize()).getG(), chm.getColor(i % chm.getSize()).getB())).getRGB());
+					im.setRGB(x, y,
+							(new Color(chm.getColor(45 * i % chm.getSize()).getR(),
+									chm.getColor(45 * i % chm.getSize()).getG(),
+									chm.getColor(15 * i % chm.getSize()).getB())).getRGB());
 				if (stripColors) {
-					if (i <= 64)
+					if (i <= max * 0.9)
 						im.setRGB(x, y, 0xffffff);
+					else
+						im.setRGB(x, y, 0x00000);
 				}
-				if (i > 64)
-					im.setRGB(x, y, 0x000000);
+				if (switchColors) {
+					im.setRGB(x, y,
+							(new Color(chm.getColor(i % chm.getSize()).getR(),
+									chm.getColor(45 * i % chm.getSize()).getG(),
+									chm.getColor(i % chm.getSize()).getB())).getRGB());
+				}
+				if (i > max * 0.9 && !stripColors)
+					im.setRGB(x, y, 0x0b38ff);
 				jS.repaint();
 			}
 		}
 	}
 
-	// Preset methods
+	// Presets
 
 	public void loadDefaultPresets() {
 		presetsSelection[0] = "Douady's Rabbit";
@@ -367,7 +423,7 @@ public class JuliaSet extends JFrame {
 		return null;
 	}
 
-	// Save methods
+	// Saving
 
 	public static void saveImage() {
 		try {
